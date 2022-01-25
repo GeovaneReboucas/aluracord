@@ -1,35 +1,9 @@
+import React from 'react';
+import {useRouter} from 'next/router';
+
 import appConfig from '../config.json';
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 
-
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          list-style: none;
-        }
-        body {
-          font-family: 'Open Sans', sans-serif;
-        }
-        /* App fit Height */ 
-        html, body, #__next {
-          min-height: 100vh;
-          display: flex;
-          flex: 1;
-        }
-        #__next {
-          flex: 1;
-        }
-        #__next > * {
-          flex: 1;
-        }
-        /* ./App fit Height */ 
-      `}</style>
-    );
-}
 
 function Titulo(props) {
     const Tag = props.tag || 'h1';
@@ -66,16 +40,19 @@ function Titulo(props) {
 // export default HomePage;
 
 export default function PaginaInicial() {
-    const username = 'GeovaneReboucas';
+    const [username, setUsername] = React.useState('GeovaneReboucas');
+    const roteamento = useRouter();
+
+    // console.log(roteamento);
 
     return (
         <>
-            <GlobalStyle />
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: appConfig.theme.colors.custom['100'],
-                    backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+                    backgroundColor: appConfig.theme.colors.primary['000'],
+                    // backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+                    backgroundImage: 'url(https://www.mheda.org/wp-content/uploads/2021/12/76dcafc26efcb4fd9cc77292fce442be.png)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 }}
             >
@@ -90,13 +67,17 @@ export default function PaginaInicial() {
                         },
                         width: '100%', maxWidth: '700px',
                         borderRadius: '5px', padding: '32px', margin: '16px',
-                        boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
+                        boxShadow: '0 0 10px 3px rgb(0 0 0 / 40%)',
                         backgroundColor: appConfig.theme.colors.neutrals[700],
                     }}
                 >
                     {/* Formulário */}
                     <Box
-                        as="form"
+                        as="form" 
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            roteamento.push('/chat');
+                        }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -108,12 +89,16 @@ export default function PaginaInicial() {
                         </Text>
 
                         <TextField
+                            // value={username}
+                            onChange={(e) => { 
+                                ((e.target.value).length) > 2 ? setUsername(e.target.value) : setUsername('Alura');
+                            }}
                             fullWidth
                             textFieldColors={{
                                 neutral: {
                                     textColor: appConfig.theme.colors.neutrals[200],
                                     mainColor: appConfig.theme.colors.neutrals[900],
-                                    mainColorHighlight: appConfig.theme.colors.primary[500],
+                                    mainColorHighlight: appConfig.theme.colors.custom[200],
                                     backgroundColor: appConfig.theme.colors.neutrals[800],
                                 },
                             }}
@@ -124,9 +109,9 @@ export default function PaginaInicial() {
                             fullWidth
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
-                                mainColor: appConfig.theme.colors.primary[500],
+                                mainColor: appConfig.theme.colors.custom[200],
                                 mainColorLight: appConfig.theme.colors.primary[400],
-                                mainColorStrong: appConfig.theme.colors.primary[600],
+                                mainColorStrong: appConfig.theme.colors.custom[300],
                             }}
                         />
                     </Box>

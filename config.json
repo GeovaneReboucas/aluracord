@@ -1,5 +1,5 @@
 {
-    "name": "Aluracord - Matrix (GeovaneReboucas)",
+    "name": "Aluracord (GeovaneReboucas)",
     "theme": {
         "colors": {
             "primary": {
@@ -31,7 +31,10 @@
             "custom": {
                 "000": "#027fe9",
                 "050": "#158fa2",
-                "100": "#3F8CEB"
+                "100": "#3F8CEB",
+                "200": "#005bc5",
+                "300": "#012677",
+                "400": "#001449"
             }
         }
     },
