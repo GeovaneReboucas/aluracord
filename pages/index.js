@@ -1,5 +1,5 @@
 import React from 'react';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 
 import appConfig from '../config.json';
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
@@ -50,7 +50,7 @@ export default function PaginaInicial() {
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: appConfig.theme.colors.primary['000'],
+                    backgroundColor: appConfig.theme.colors.primary[200],
                     // backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
                     backgroundImage: 'url(https://www.mheda.org/wp-content/uploads/2021/12/76dcafc26efcb4fd9cc77292fce442be.png)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
@@ -73,7 +73,7 @@ export default function PaginaInicial() {
                 >
                     {/* Formulário */}
                     <Box
-                        as="form" 
+                        as="form"
                         onSubmit={(e) => {
                             e.preventDefault();
                             roteamento.push('/chat');
@@ -90,7 +90,7 @@ export default function PaginaInicial() {
 
                         <TextField
                             // value={username}
-                            onChange={(e) => { 
+                            onChange={(e) => {
                                 ((e.target.value).length) > 2 ? setUsername(e.target.value) : setUsername('Alura');
                             }}
                             fullWidth
