@@ -1,24 +1,53 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js';
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI1OTcwMiwiZXhwIjoxOTU4ODM1NzAyfQ.W3rFBjAOgclBVezkM3L1rXr8MyF5z7iHeBGLcvFON8s';
+const SUPABASE_URL = 'https://wfxxjmrxdaatghsuyels.supabase.co';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 
 export default function ChatPage() {
 
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
+
+    //Perceba que abaixo, a aplicação está pegando os dados do banco apenas uma vez, quando é iniciado.
+    //Ao digitar uma nova mensagem, ela é adicionada ao BD e ao array do useState.
+    React.useEffect(() => {
+        supabaseClient
+            .from('mensagens')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(( {data} ) => {
+                // console.log('Dados da consulta: ', data);
+                setListaDeMensagens(data);
+            });
+    }, []);
+
     function handleNovaMensagem(novaMensagem) {
-        if(!(mensagem === "")){
+        if (!(novaMensagem === "")) {
             const mensagem = {
-                id: listaDeMensagens.length + 1,
-                de: 'VanessaMelo',
+                // id: listaDeMensagens.length + 1,
+                de: 'omariosouto',
                 texto: novaMensagem,
             }
 
-            setListaDeMensagens([
-                mensagem,
-                ...listaDeMensagens,
-            ]);
+            supabaseClient
+                .from('mensagens')
+                .insert([
+                    //É necessário que o objeto tenha os mesmos campos que o BD
+                    mensagem
+                ]).then(( {data} ) => {
+                    // console.log("RESPOSTA DA CRIAÇÃO: ", data);
+
+                    setListaDeMensagens([
+                        data[0],
+                        ...listaDeMensagens,
+                    ]);
+                });
             setMensagem('');
         }
     }
@@ -80,10 +109,10 @@ export default function ChatPage() {
                     >
                         <TextField
                             value={mensagem}
-                            
+
                             //pegar o valor do campo
                             onChange={(e) => {
-                               setMensagem(e.target.value);
+                                setMensagem(e.target.value);
                             }}
 
                             //capturar a tecla
@@ -98,7 +127,6 @@ export default function ChatPage() {
                             type="textarea"
                             styleSheet={{
                                 width: '100%',
-                                border: '0',
                                 resize: 'none',
                                 borderRadius: '5px',
                                 padding: '6px 8px',
@@ -106,8 +134,13 @@ export default function ChatPage() {
                                 marginRight: '12px',
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
+                            textFieldColors={{
+                                neutral: {
+                                    mainColorHighlight: appConfig.theme.colors.custom[200],
+                                }
+                            }}
                         />
-                        <Button 
+                        <Button
                             label='Enviar'
                             styleSheet={{
                                 height: '85%',
@@ -138,7 +171,7 @@ function Header() {
                 <Button
                     variant='tertiary'
                     colorVariant='neutral'
-                    label='Logout'
+                    label='Sair'
                     href="/"
                 />
             </Box>
@@ -188,7 +221,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/${itemMensagem.de}.png`}
                             />
                             <Text tag="strong">
                                 {itemMensagem.de}
