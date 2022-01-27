@@ -8,17 +8,19 @@ export default function ChatPage() {
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
     function handleNovaMensagem(novaMensagem) {
-        const mensagem = {
-            id: listaDeMensagens.length + 1,
-            de: 'VanessaMelo',
-            texto: novaMensagem,
-        }
+        if(!(mensagem === "")){
+            const mensagem = {
+                id: listaDeMensagens.length + 1,
+                de: 'VanessaMelo',
+                texto: novaMensagem,
+            }
 
-        setListaDeMensagens([
-            mensagem,
-            ...listaDeMensagens,
-        ]);
-        setMensagem('');
+            setListaDeMensagens([
+                mensagem,
+                ...listaDeMensagens,
+            ]);
+            setMensagem('');
+        }
     }
 
 
@@ -73,14 +75,15 @@ export default function ChatPage() {
                         as="form"
                         styleSheet={{
                             display: 'flex',
-                            alignItems: 'center',
+                            // alignItems: 'center',
                         }}
                     >
                         <TextField
                             value={mensagem}
+                            
                             //pegar o valor do campo
                             onChange={(e) => {
-                                setMensagem(e.target.value);
+                               setMensagem(e.target.value);
                             }}
 
                             //capturar a tecla
@@ -103,6 +106,20 @@ export default function ChatPage() {
                                 marginRight: '12px',
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
+                        />
+                        <Button 
+                            label='Enviar'
+                            styleSheet={{
+                                height: '85%',
+                                // padding: '10px 12px'
+                            }}
+                            buttonColors={{
+                                contrastColor: appConfig.theme.colors.neutrals["000"],
+                                mainColor: appConfig.theme.colors.custom[200],
+                                mainColorLight: appConfig.theme.colors.primary[400],
+                                mainColorStrong: appConfig.theme.colors.custom[300],
+                            }}
+                            onClick={() => handleNovaMensagem(mensagem)}
                         />
                     </Box>
                 </Box>
