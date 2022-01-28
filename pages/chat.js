@@ -3,27 +3,29 @@ import React from 'react';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI1OTcwMiwiZXhwIjoxOTU4ODM1NzAyfQ.W3rFBjAOgclBVezkM3L1rXr8MyF5z7iHeBGLcvFON8s';
-const SUPABASE_URL = 'https://wfxxjmrxdaatghsuyels.supabase.co';
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import NProgress from "nprogress";
 
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+const SUPABASE_URL = `https://${process.env.NEXT_PUBLIC_SUPABASE_URL_KEY}.supabase.co`;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
 
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
-
     //Perceba que abaixo, a aplicação está pegando os dados do banco apenas uma vez, quando é iniciado.
     //Ao digitar uma nova mensagem, ela é adicionada ao BD e ao array do useState.
     React.useEffect(() => {
+        NProgress.start();
         supabaseClient
-            .from('mensagens')
+            .from("mensagens")
             .select('*')
             .order('id', { ascending: false })
             .then(( {data} ) => {
                 // console.log('Dados da consulta: ', data);
                 setListaDeMensagens(data);
+                NProgress.done();
             });
     }, []);
 
@@ -58,7 +60,7 @@ export default function ChatPage() {
             styleSheet={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 backgroundColor: appConfig.theme.colors.primary[200],
-                backgroundImage: `url(https://www.mheda.org/wp-content/uploads/2021/12/76dcafc26efcb4fd9cc77292fce442be.png)`,
+                backgroundImage: 'url(/bgAbstract.png)',
                 backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 color: appConfig.theme.colors.neutrals['000']
             }}

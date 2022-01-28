@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 
+import NProgress from "nprogress";
 
 function Titulo(props) {
     const Tag = props.tag || 'h1';
@@ -42,8 +43,12 @@ function Titulo(props) {
 export default function PaginaInicial() {
     const [username, setUsername] = React.useState('GeovaneReboucas');
     const roteamento = useRouter();
-
     // console.log(roteamento);
+    
+    React.useEffect(() => {
+        NProgress.start();
+        NProgress.done()
+    }, []);
 
     return (
         <>
@@ -51,8 +56,7 @@ export default function PaginaInicial() {
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     backgroundColor: appConfig.theme.colors.primary[200],
-                    // backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
-                    backgroundImage: 'url(https://www.mheda.org/wp-content/uploads/2021/12/76dcafc26efcb4fd9cc77292fce442be.png)',
+                    backgroundImage: 'url(/bgAbstract.png)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 }}
             >
