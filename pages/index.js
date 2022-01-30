@@ -41,10 +41,10 @@ function Titulo(props) {
 // export default HomePage;
 
 export default function PaginaInicial() {
-    const [username, setUsername] = React.useState('GeovaneReboucas');
+    const [username, setUsername] = React.useState('');
     const roteamento = useRouter();
     // console.log(roteamento);
-    
+
     React.useEffect(() => {
         NProgress.start();
         NProgress.done()
@@ -55,8 +55,8 @@ export default function PaginaInicial() {
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: appConfig.theme.colors.primary[200],
-                    backgroundImage: 'url(/bgAbstract.png)',
+                    backgroundColor: appConfig.theme.colors.primary['000'],
+                    backgroundImage: 'url(/images/estrelas.jpg)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 }}
             >
@@ -73,6 +73,7 @@ export default function PaginaInicial() {
                         borderRadius: '5px', padding: '32px', margin: '16px',
                         boxShadow: '0 0 10px 3px rgb(0 0 0 / 40%)',
                         backgroundColor: appConfig.theme.colors.neutrals[700],
+                        // opacity:'0.97'
                     }}
                 >
                     {/* Formulário */}
@@ -80,7 +81,7 @@ export default function PaginaInicial() {
                         as="form"
                         onSubmit={(e) => {
                             e.preventDefault();
-                            roteamento.push('/chat');
+                            roteamento.push(`/chat?username=${username}`);
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -95,7 +96,7 @@ export default function PaginaInicial() {
                         <TextField
                             // value={username}
                             onChange={(e) => {
-                                ((e.target.value).length) > 2 ? setUsername(e.target.value) : setUsername('Alura');
+                                ((e.target.value).length) > 2 ? setUsername(e.target.value) : setUsername('');
                             }}
                             fullWidth
                             textFieldColors={{
@@ -110,6 +111,7 @@ export default function PaginaInicial() {
                         <Button
                             type='submit'
                             label='Entrar'
+                            disabled={!username}
                             fullWidth
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -138,24 +140,52 @@ export default function PaginaInicial() {
                             minHeight: '240px',
                         }}
                     >
-                        <Image
-                            styleSheet={{
-                                borderRadius: '50%',
-                                marginBottom: '16px',
-                            }}
-                            src={`https://github.com/${username}.png`}
-                        />
-                        <Text
-                            variant="body4"
-                            styleSheet={{
-                                color: appConfig.theme.colors.neutrals[200],
-                                backgroundColor: appConfig.theme.colors.neutrals[900],
-                                padding: '3px 10px',
-                                borderRadius: '1000px'
-                            }}
-                        >
-                            {username}
-                        </Text>
+                        {username ? (
+                            <>
+                                <Image
+                                    styleSheet={{
+                                        borderRadius: '50%',
+                                        marginBottom: '16px',
+                                    }}
+                                    src={`https://github.com/${username}.png`}
+                                />
+
+                                <Text
+                                    variant="body4"
+                                    styleSheet={{
+                                        color: appConfig.theme.colors.neutrals[200],
+                                        backgroundColor: appConfig.theme.colors.neutrals[900],
+                                        padding: '3px 10px',
+                                        borderRadius: '1000px'
+                                    }}
+                                >
+                                    {username}
+                                </Text>
+                            </>
+                        ) : (
+                            <>
+                                <Image
+                                    styleSheet={{
+                                        height: '8rem',
+                                        borderRadius: '10%',
+                                        marginBottom: '16px',
+                                    }}
+                                    // src={'https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/EVE.Wall-E.webp'}
+                                    src={'/images/eve.webp'}
+                                />
+                                <Text
+                                    variant="body4"
+                                    styleSheet={{
+                                        color: appConfig.theme.colors.neutrals[200],
+                                        backgroundColor: appConfig.theme.colors.neutrals[900],
+                                        padding: '3px 10px',
+                                        borderRadius: '1000px'
+                                    }}
+                                >
+                                    Aluracord
+                                </Text>
+                            </>
+                        )}
                     </Box>
                     {/* Photo Area */}
                 </Box>
