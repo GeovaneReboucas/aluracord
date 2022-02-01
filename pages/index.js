@@ -98,6 +98,7 @@ export default function PaginaInicial() {
                             onChange={(e) => {
                                 ((e.target.value).length) > 2 ? setUsername(e.target.value) : setUsername('');
                             }}
+                            placeholder='Insira seu username do Github'
                             fullWidth
                             textFieldColors={{
                                 neutral: {
@@ -113,6 +114,9 @@ export default function PaginaInicial() {
                             label='Entrar'
                             disabled={!username}
                             fullWidth
+                            styleSheet={{
+                                borderRadius: '15px 0px'
+                            }}
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
                                 mainColor: appConfig.theme.colors.custom[200],
@@ -146,6 +150,7 @@ export default function PaginaInicial() {
                                     styleSheet={{
                                         borderRadius: '50%',
                                         marginBottom: '16px',
+                                        transition: '0.5s'
                                     }}
                                     src={`https://github.com/${username}.png`}
                                 />
@@ -169,9 +174,10 @@ export default function PaginaInicial() {
                                         height: '8rem',
                                         borderRadius: '10%',
                                         marginBottom: '16px',
+                                        transition: '0.6s'
                                     }}
-                                    // src={'https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/EVE.Wall-E.webp'}
-                                    src={'/images/eve.webp'}
+                                    // src={'/images/eve.webp'}
+                                    src={'/images/uuj.gif'}
                                 />
                                 <Text
                                     variant="body4"

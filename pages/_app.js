@@ -34,6 +34,8 @@ export default function MyApp({ Component, pageProps }) {
     <>
       <Head>
         <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+        <link className="favicon" rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png"></link>
+        <title>Aluracord - eve</title>
       </Head>
       <GlobalStyle />
       <Component {...pageProps} />

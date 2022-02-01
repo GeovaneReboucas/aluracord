@@ -1,9 +1,11 @@
-import { Box, Text, TextField, Image, Button } from '@skynexui/components';
+import { Box, TextField, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
 import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
+import { Header } from '../src/components/Header';
+import { MessageList } from '../src/components/MessageList';
 
 import NProgress from "nprogress";
 
@@ -19,6 +21,15 @@ function mensagemTempoReal(adicionaMensagem) {
         }).subscribe();
 }
 
+function deleteTempoReal(deletaMensagem) {
+    return supabaseClient
+        .from('mensagens')
+        .on('DELETE', ({old}) => {
+            deletaMensagem(old.id);
+        });
+}
+
+
 
 export default function ChatPage() {
 
@@ -32,6 +43,7 @@ export default function ChatPage() {
     //Ao digitar uma nova mensagem, ela é adicionada ao BD e ao array do useState.
     React.useEffect(() => {
         NProgress.start();
+        NProgress.set(0.45);
         supabaseClient
             .from("mensagens")
             .select('*')
@@ -44,20 +56,31 @@ export default function ChatPage() {
 
         mensagemTempoReal((novaMensagem) => {
             // console.log("NOVA MENSAGEM ESCUTADA: ",novaMensagem);
+            NProgress.start();
             setListaDeMensagens((valorAtualDaLista) => {
                 return [
                     novaMensagem,
                     ...valorAtualDaLista,
                 ]
             });
+            NProgress.done();
         });
+
+        deleteTempoReal((oldId) => {
+            NProgress.start();
+            setListaDeMensagens((MessageList) => {
+                return MessageList.filter((message) => message.id !== oldId)
+            });
+            NProgress.done();
+        });
+
     }, []);
 
     function handleNovaMensagem(novaMensagem) {
         if (!(novaMensagem === "")) {
             const mensagem = {
                 // id: listaDeMensagens.length + 1,
-                de: usuario,
+                de: usuario.toLowerCase(),
                 texto: novaMensagem,
             }
 
@@ -72,6 +95,15 @@ export default function ChatPage() {
                 });
             setMensagem('');
         }
+    }
+
+    function deleteMessage(messageId) {
+        supabaseClient
+            .from('mensagens')
+            .delete()
+            .match({ id: messageId })
+            .then(({ data }) => {
+            })
     }
 
 
@@ -113,7 +145,11 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList mensagens={listaDeMensagens} />
+                    <MessageList
+                        mensagens={listaDeMensagens}
+                        delete={deleteMessage}
+                        user={usuario}
+                    />
 
                     <Box
                         as="form"
@@ -143,7 +179,7 @@ export default function ChatPage() {
                             styleSheet={{
                                 width: '100%',
                                 resize: 'none',
-                                borderRadius: '5px',
+                                borderRadius: '10px 0',
                                 padding: '6px 8px',
                                 backgroundColor: appConfig.theme.colors.neutrals[800],
                                 marginRight: '12px',
@@ -159,7 +195,8 @@ export default function ChatPage() {
                             label='Enviar'
                             styleSheet={{
                                 height: '75%',
-                                marginRight: '12px'
+                                marginRight: '12px',
+                                borderRadius: '10px 0'
                             }}
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -181,104 +218,3 @@ export default function ChatPage() {
     )
 }
 
-function Header() {
-    return (
-        <>
-            <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
-                <Text variant='heading5'>
-                    Chat
-                </Text>
-                <Button
-                    variant='tertiary'
-                    colorVariant='neutral'
-                    label='Sair'
-                    href="/"
-                />
-            </Box>
-        </>
-    )
-}
-
-function MessageList(props) {
-    // console.log('MessageList', props.mensagens);
-    return (
-        <Box
-            tag="ul"
-            styleSheet={{
-                overflow: 'auto',
-                display: 'flex',
-                flexDirection: 'column-reverse',
-                flex: 1,
-                color: appConfig.theme.colors.neutrals["000"],
-                marginBottom: '16px',
-            }}
-        >
-
-            {props.mensagens.map((itemMensagem) => {
-                return (
-                    <Text
-                        key={itemMensagem.id}
-                        tag="li"
-                        styleSheet={{
-                            borderRadius: '5px',
-                            padding: '6px',
-                            marginBottom: '12px',
-                            hover: {
-                                backgroundColor: appConfig.theme.colors.neutrals[700],
-                            }
-                        }}
-                    >
-                        <Box
-                            styleSheet={{
-                                marginBottom: '8px',
-                            }}
-                        >
-                            <Image
-                                styleSheet={{
-                                    width: '20px',
-                                    height: '20px',
-                                    borderRadius: '50%',
-                                    display: 'inline-block',
-                                    marginRight: '8px',
-                                }}
-                                src={`https://github.com/${itemMensagem.de}.png`}
-                            />
-                            <Text tag="strong">
-                                {itemMensagem.de}
-                            </Text>
-                            <Text
-                                styleSheet={{
-                                    fontSize: '10px',
-                                    marginLeft: '8px',
-                                    color: appConfig.theme.colors.neutrals[300],
-                                }}
-                                tag="span"
-                            >
-                                {(new Date().toLocaleDateString())}
-                            </Text>
-                        </Box>
-
-                        {/* ternário abaixo para verificar se foi adicionado um sticker*/}
-                        {itemMensagem.texto.startsWith(':sticker:') ? (
-                            <Image
-                                src={itemMensagem.texto.replace(':sticker:', '')}
-                                styleSheet={{
-                                    width: {
-                                        xs: '200px',
-                                        sm: '290px',
-                                    },
-                                    height: '240px' 
-                                }}
-                            />
-                        ) : (
-                            itemMensagem.texto
-                        )}
-
-                    </Text>
-
-                );
-            })}
-
-        </Box>
-    )
-}

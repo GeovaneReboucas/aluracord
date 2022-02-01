@@ -5,10 +5,15 @@ import appConfig from '../../config.json';
 export function ButtonSendSticker(props) {
     const [isOpen, setOpenState] = React.useState('');
 
+    function test(){
+        console.log("TESTANDO");
+    }
+
     return (
         <Box
             styleSheet={{
                 position: 'relative',
+                hover: 'setOpenState(!isOpen)'
             }}
         >
             <Button
@@ -27,7 +32,7 @@ export function ButtonSendSticker(props) {
                     filter: isOpen ? 'grayscale(0)' : 'grayscale(1)',
                     hover: {
                         filter: 'grayscale(0)',
-                    }
+                    },
                 }}
                 buttonColors={{
                     mainColorStrong: appConfig.theme.colors.custom[300]
