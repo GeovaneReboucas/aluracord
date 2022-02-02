@@ -111,7 +111,7 @@ export default function ChatPage() {
         <Box
             styleSheet={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backgroundColor: appConfig.theme.colors.primary[200],
+                backgroundColor: appConfig.theme.colors.primary['000'],
                 backgroundImage: 'url(/images/estrelas.jpg)',
                 backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 color: appConfig.theme.colors.neutrals['000']

@@ -57,7 +57,11 @@ export function MessageList(props) {
                                     }}
                                     src={`https://github.com/${itemMensagem.de}.png`}
                                 />
-                                <Text tag="strong">
+                                <Text 
+                                    styleSheet={{
+                                        fontWeight: '700'
+                                    }}
+                                >
                                     {itemMensagem.de}
                                 </Text>
                                 <Text

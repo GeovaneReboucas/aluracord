@@ -177,7 +177,7 @@ export default function PaginaInicial() {
                                         transition: '0.6s'
                                     }}
                                     // src={'/images/eve.webp'}
-                                    src={'/images/uuj.gif'}
+                                    src={'/images/eve2.webp'}
                                 />
                                 <Text
                                     variant="body4"
