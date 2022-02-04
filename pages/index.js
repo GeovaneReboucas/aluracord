@@ -1,8 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
+
 import appConfig from '../config.json';
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import { GithubElement } from '../src/components/GithubElement';
 
 import NProgress from "nprogress";
 
@@ -26,23 +28,12 @@ function Titulo(props) {
     );
 }
 
-
-// function HomePage() {
-//     return (
-//         <div>
-//             <GlobalStyle />
-
-//             <Titulo tag="h2">Boas vindas de volta!</Titulo>
-//             <h2>Discord - Alura Matrix</h2>
-//         </div>
-//     )
-// }
-
-// export default HomePage;
-
 export default function PaginaInicial() {
     const [username, setUsername] = React.useState('');
+    const [errorUser, setErrorUser] = React.useState();
+    const [data, setData] = React.useState({ followers: 0, repositories: 0, location: '' });
     const roteamento = useRouter();
+    var initial;
     // console.log(roteamento);
 
     React.useEffect(() => {
@@ -50,11 +41,49 @@ export default function PaginaInicial() {
         NProgress.done()
     }, []);
 
+    const validData = async (user) => {
+
+        if (user.length > 2) {
+            
+            clearTimeout(initial);
+            setUsername(user);
+
+            initial = setTimeout(() => {
+                
+                if(errorUser !== 403){ 
+                    return fetch(`https://api.github.com/users/${user}`, {
+                        method: 'GET'
+                    }).then(async (res) => {
+                        if (res.status === 200) {
+                            let dados = await res.json();
+                            // console.log("DADOS", dados);
+                            setErrorUser(200);
+                            setData({ 
+                                followers: dados.followers, 
+                                repositories: dados.public_repos,
+                                location: dados.location
+                            });
+                        }else if(res.status === 403){//error api limit
+                            console.log("API LIMITE");
+                            setErrorUser(403);
+                        }else{
+                            setErrorUser(404);
+                        }
+                    });
+                }
+            }, 1500);
+        }else{
+            setUsername('');
+            setErrorUser(404);
+        }
+    }
+    
+
     return (
         <>
             <Box
                 styleSheet={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column',
                     backgroundColor: appConfig.theme.colors.primary['000'],
                     backgroundImage: 'url(/images/estrelas.jpg)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
@@ -70,7 +99,8 @@ export default function PaginaInicial() {
                             sm: 'row',
                         },
                         width: '100%', maxWidth: '700px',
-                        borderRadius: '5px', padding: '32px', margin: '16px',
+                        borderRadius: '5px', padding: '32px', 
+                        margin: '0 16px',
                         boxShadow: '0 0 10px 3px rgb(0 0 0 / 40%)',
                         backgroundColor: appConfig.theme.colors.neutrals[700],
                         // opacity:'0.97'
@@ -96,7 +126,7 @@ export default function PaginaInicial() {
                         <TextField
                             // value={username}
                             onChange={(e) => {
-                                ((e.target.value).length) > 2 ? setUsername(e.target.value) : setUsername('');
+                                validData(e.target.value);
                             }}
                             placeholder='Insira seu username do Github'
                             fullWidth
@@ -195,6 +225,22 @@ export default function PaginaInicial() {
                     </Box>
                     {/* Photo Area */}
                 </Box>
+
+                {/* github informations */}
+                {errorUser === 200 &&
+                    <>
+                        <Box styleSheet={{
+                            width: '100%', maxWidth: '700px', padding: '20px',
+                            display: 'flex', borderTop: `2px solid ${appConfig.theme.colors.neutrals[800]}`,
+                            backgroundColor: appConfig.theme.colors.neutrals[700]
+                        }}>
+                            <GithubElement infoTitle="Seguidores"> {data.followers}</GithubElement>
+                            <GithubElement infoTitle="Repositórios"> {data.repositories}</GithubElement>
+                            <GithubElement infoTitle="Localização"> {data.location}</GithubElement>
+                        </Box>
+                    </>
+                }
+
             </Box>
         </>
     );
